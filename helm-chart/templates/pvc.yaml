@@ -1,0 +1,23 @@
+{{- if and .Values.mysqlService.persistence.enabled (not .Values.mysqlService.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- if .Values.mysqlService.persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.mysqlService.persistence.storageClass | quote }}
+  {{- else }}
+    volume.alpha.kubernetes.io/storage-class: default
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.mysqlService.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.mysqlService.persistence.size | quote }}
+{{- end }}

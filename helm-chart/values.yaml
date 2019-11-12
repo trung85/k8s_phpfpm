@@ -15,6 +15,26 @@ phpfpmService:
   name: phpfpm
   type: NodePort
   phpfpmPort: 9000
+mysqlService:
+  image:
+    pullPolicy: IfNotPresent
+    repository: mysql
+    tag: 5.7
+  persistence:
+    accessMode: ReadWriteOnce
+    enabled: true
+    size: 2Gi
+    storageClass: local-path
+    # existingClaim: mysql-pvc
+  # resources:
+  #   requests:
+  #     memory: 512Mi
+  #     cpu: 500m
+  serviceType: ClusterIP
+  mysqldbDatabase: my_database
+  mysqldbUser: admin
+  mysqldbPassword: adminPassword
+  mysqlRootPassword: rootPassword
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).

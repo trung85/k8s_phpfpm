@@ -10,16 +10,16 @@ services:
     networks:
       - app-tier
   nginx:
-    image: 'bitnami/nginx:1.12.0-r2'
+    image: 'bitnami/nginx:latest'
     depends_on:
       - phpfpm
     networks:
       - app-tier
     ports:
-      - '80:80'
-      - '443:443'
+      - '8091:8080'
+      - '8444:443'
     volumes:
-      - ./vhosts:/bitnami/nginx/conf/vhosts
+      - ./vhosts:/opt/bitnami/nginx/conf/server_blocks
   mariadb:
     image: bitnami/mariadb:latest
     environment:

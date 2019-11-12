@@ -15,53 +15,83 @@ spec:
     app: {{ template "fullname" . }}-phpfpm
 ---
 apiVersion: v1
-kind: PersistentVolume
+kind: Service
 metadata:
-  name: mariadb-pv
+  name: {{ template "fullname" . }}-mysql
+  labels:
+    app: {{ template "fullname" . }}-mysql
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-    - ReadOnlyMany
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: /bitnami/mariadb
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: mariadbslave-pv
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-    - ReadOnlyMany
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: /bitnami/mariadbslave
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mariadb-pvc
-spec:
-  storageClassName: ""
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: data-mariadb-mariadb-slave-0
-spec:
-  storageClassName: ""
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+  type: {{ .Values.mysqlService.serviceType }}
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: {{ template "fullname" . }}-mysql
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: {{ template "fullname" . }}-mysql-pv
+# spec:
+#   capacity:
+#     storage: 2Gi
+#   accessModes:
+#     - ReadWriteOnce
+#     - ReadOnlyMany
+#   persistentVolumeReclaimPolicy: Retain
+#   hostPath:
+#     path: /tmp/mysqldb
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: {{ template "fullname" . }}-mysql-pvc
+# spec:
+#   storageClassName: ""
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 2Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: mariadbslave-pv
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteOnce
+#     - ReadOnlyMany
+#   persistentVolumeReclaimPolicy: Retain
+#   hostPath:
+#     path: /bitnami/mariadbslave
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: mariadb-pvc
+# spec:
+#   storageClassName: ""
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 1Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: data-phpfpm-mariadb-slave-0
+# spec:
+#   storageClassName: ""
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 1Gi

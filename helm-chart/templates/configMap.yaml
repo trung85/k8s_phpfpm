@@ -21,3 +21,5 @@ data:
         include fastcgi.conf;
       }
     }
+  test-key1: "foo"
+  test-key2: "bar"
