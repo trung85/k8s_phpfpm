@@ -1,0 +1,33 @@
+post: https://medium.com/@thanawitsupinnapong/setting-up-redis-in-kubernetes-with-helm-and-manual-persistent-volume-f1d52fa1919f
+
+run your script.
+kubectl create -f redis-pv.yaml
+
+Install Redis with Helm
+helm install --name redis-cluster -f redis-value.yaml stable/redis
+
+OR: run redis-helm.sh
+
+
+
+Connect using the Redis CLI
+Now the service is ready to use and you can connect to your redis server with Redis CLI command.
+redis-cluster-master for read/write operations
+redis-cluster-slave for read-only operations
+
+
+kubectl exec -it redis-cluster-master-0 bash
+
+
+Execute into pod and then run script for access your redis.
+redis-cli -h redis-cluster -a password
+[redis-cluster: is service name in Service Discovery]
+
+Finally you can use command for test your redis it work or not. 😲
+$ redis-cli -h redis-cluster -a password
+Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
+redis-cluster:6379> set hi "heelolll"
+OK
+redis-cluster:6379> get hi
+"heelolll"
+redis-cluster:6379>
